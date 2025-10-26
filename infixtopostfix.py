@@ -51,7 +51,7 @@ def infix_to_postfix(expression):
 
 
 # -------------- MAIN --------------
-if _name_ == "_main_":
+if __name__ == "_main_":
     print("Operators supported: ! (NOT), & (AND), | (OR), ^ (XOR), @ (XNOR)")
     expr = input("Enter boolean expression: ")
     postfix = infix_to_postfix(expr.replace(" ", ""))  # remove spaces
