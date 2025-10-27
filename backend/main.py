@@ -1,4 +1,4 @@
-# backend/main.py
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -13,7 +13,6 @@ logger = logging.getLogger("kmap_main")
 
 app = FastAPI(title="K-Map Simplifier API", version="1.1")
 
-# DEV: allow all origins while debugging. Replace with explicit origins for production.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,7 +25,6 @@ class SimplifyRequest(BaseModel):
     infix: str = Field(..., description="Boolean expression in infix notation (e.g. A+B'C)")
     return_kmap: bool = Field(False, description="Include K-map 2D array in response")
 
-# For debugging, response_model removed so client sees exact output
 @app.post("/simplify")
 async def simplify_boolean(req: SimplifyRequest):
     logger.info("Received simplify request: infix=%s return_kmap=%s", req.infix, req.return_kmap)
@@ -43,6 +41,8 @@ async def simplify_boolean(req: SimplifyRequest):
 
         return {
             "success": True,
+            "infix": req.infix,
+            "postfix": postfix_expr,
             "simplified": simplified,
             "variables": vars_list,
             "minterms": sorted(minterms) if minterms else [],

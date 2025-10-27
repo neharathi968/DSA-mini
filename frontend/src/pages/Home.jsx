@@ -330,6 +330,13 @@ function Home() {
           flex: 1;
         }
 
+        .result-postfix {
+          font-family: 'Courier New', monospace;
+          color: #fbbf24;
+          font-size: 1.125rem;
+          flex: 1;
+        }
+
         .result-simplified {
           font-family: 'Courier New', monospace;
           color: #4ade80;
@@ -344,20 +351,26 @@ function Home() {
           color: #93c5fd;
           flex: 1;
         }
+
+        .section-divider {
+          height: 2px;
+          background: linear-gradient(to right, transparent, rgba(71, 85, 105, 0.5), transparent);
+          margin: 1.5rem 0;
+        }
       `}</style>
 
       <div className="app-container">
         <div className="container">
           <div className="header">
-            <h1 className="title">K-Map Simplifier</h1>
-            <p className="subtitle">Simplify Boolean expressions using Karnaugh Maps</p>
+            <h1 className="title">LOGIC GATE SIMULATOR</h1>
+            <p className="subtitle">Takes an infix expression as input and visualizes its corresponding logic diagram.</p>
           </div>
 
           <div className="card">
             <div className="form-container">
               <div className="input-group">
                 <label htmlFor="expression-input" className="label">
-                  Boolean Expression
+                  Boolean Expression (Infix Notation)
                 </label>
                 <input
                   id="expression-input"
@@ -441,21 +454,34 @@ function Home() {
               
               <div className="result-container">
                 <div className="result-row">
-                  <span className="result-label">Original</span>
+                  <span className="result-label">Infix Input</span>
                   <span className="result-original">{input}</span>
                 </div>
                 
+                {output.postfix && (
+                  <div className="result-row">
+                    <span className="result-label">Postfix</span>
+                    <span className="result-postfix">{output.postfix}</span>
+                  </div>
+                )}
+
+                <div className="section-divider"></div>
+                
                 <div className="result-row">
-                  <span className="result-label">Simplified</span>
+                  <span className="result-label">Simplified SOP</span>
                   <span className="result-simplified">{output.simplified}</span>
                 </div>
                 
                 <div className="result-row">
                   <span className="result-label">Variables</span>
-                  <span className="result-value">{output.variables.join(", ")}</span>
+                  <span className="result-value">
+                    {output.variables && output.variables.length > 0 
+                      ? output.variables.join(", ") 
+                      : "None"}
+                  </span>
                 </div>
                 
-                {output.minterms?.length > 0 && (
+                {output.minterms && output.minterms.length > 0 && (
                   <div className="result-row">
                     <span className="result-label">Minterms</span>
                     <span className="result-value">{output.minterms.join(", ")}</span>
