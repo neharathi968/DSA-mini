@@ -1,3 +1,4 @@
+# backend/main.py
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -12,11 +13,10 @@ logger = logging.getLogger("kmap_main")
 
 app = FastAPI(title="K-Map Simplifier API", version="1.1")
 
-origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
-
+# DEV: allow all origins while debugging. Replace with explicit origins for production.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,29 +26,29 @@ class SimplifyRequest(BaseModel):
     infix: str = Field(..., description="Boolean expression in infix notation (e.g. A+B'C)")
     return_kmap: bool = Field(False, description="Include K-map 2D array in response")
 
-class SimplifyResponse(BaseModel):
-    success: bool
-    simplified: str
-    variables: List[str]
-    minterms: Optional[List[int]] = None
-    kmap: Optional[List[List[int]]] = None
-    message: Optional[str] = None
-
-@app.post("/simplify", response_model=SimplifyResponse)
+# For debugging, response_model removed so client sees exact output
+@app.post("/simplify")
 async def simplify_boolean(req: SimplifyRequest):
+    logger.info("Received simplify request: infix=%s return_kmap=%s", req.infix, req.return_kmap)
     try:
         infix_expr = req.infix.replace(" ", "")
         postfix_expr = infix_to_postfix(infix_expr)
         logger.info("Converted infix to postfix: %s -> %s", infix_expr, postfix_expr)
+
         simplified, vars_list, minterms, kmap = postfix_to_simplified_SOP_kmap_2d(postfix_expr)
-        return SimplifyResponse(
-            success=True,
-            simplified=simplified,
-            variables=vars_list,
-            minterms=sorted(minterms) if minterms else [],
-            kmap=kmap if req.return_kmap else None,
-            message="Simplification successful"
+        logger.info(
+            "Simplification result: simplified=%s vars=%s minterms=%s kmap_present=%s",
+            simplified, vars_list, minterms, bool(kmap)
         )
+
+        return {
+            "success": True,
+            "simplified": simplified,
+            "variables": vars_list,
+            "minterms": sorted(minterms) if minterms else [],
+            "kmap": kmap if req.return_kmap else None,
+            "message": "Simplification successful"
+        }
     except ValueError as e:
         logger.exception("Invalid input")
         raise HTTPException(status_code=400, detail=str(e))
