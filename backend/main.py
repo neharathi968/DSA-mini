@@ -1,43 +1,44 @@
-
+# backend/main.py
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
-from typing import Optional, List
 import logging
+import os
 
 from backend.infixtopostfix import infix_to_postfix
 from backend.kmap import postfix_to_simplified_SOP_kmap_2d
+from backend.expressiontree import exptree
+from backend.tree_to_graph import tree_to_graph
+from backend.graph_to_reactflow import save_circuit_json
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("kmap_main")
 
-app = FastAPI(title="K-Map Simplifier API", version="1.1")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app = FastAPI()
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+os.makedirs("static", exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 class SimplifyRequest(BaseModel):
-    infix: str = Field(..., description="Boolean expression in infix notation (e.g. A+B'C)")
-    return_kmap: bool = Field(False, description="Include K-map 2D array in response")
+    infix: str
+    return_kmap: bool = False
+    return_circuit: bool = False
 
 @app.post("/simplify")
 async def simplify_boolean(req: SimplifyRequest):
-    logger.info("Received simplify request: infix=%s return_kmap=%s", req.infix, req.return_kmap)
     try:
         infix_expr = req.infix.replace(" ", "")
         postfix_expr = infix_to_postfix(infix_expr)
-        logger.info("Converted infix to postfix: %s -> %s", infix_expr, postfix_expr)
-
         simplified, vars_list, minterms, kmap = postfix_to_simplified_SOP_kmap_2d(postfix_expr)
-        logger.info(
-            "Simplification result: simplified=%s vars=%s minterms=%s kmap_present=%s",
-            simplified, vars_list, minterms, bool(kmap)
-        )
+
+        circuit_url = None
+        if req.return_circuit and simplified not in ["0", "1"]:
+            simp_postfix = infix_to_postfix(simplified)
+            tree = exptree(simp_postfix)
+            nodes, root_gate = tree_to_graph(tree)
+            if root_gate:
+                circuit_url = save_circuit_json(root_gate)
 
         return {
             "success": True,
@@ -47,19 +48,13 @@ async def simplify_boolean(req: SimplifyRequest):
             "variables": vars_list,
             "minterms": sorted(minterms) if minterms else [],
             "kmap": kmap if req.return_kmap else None,
-            "message": "Simplification successful"
+            "circuit_url": circuit_url,
+            "message": "Success"
         }
-    except ValueError as e:
-        logger.exception("Invalid input")
-        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        logger.exception("Unexpected internal error")
-        raise HTTPException(status_code=500, detail=f"Internal error: {e}")
+        logger.exception("Error")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/health")
 async def health():
     return {"status": "ok"}
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, reload=True)

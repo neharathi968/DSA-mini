@@ -1,11 +1,18 @@
-import { useState } from "react";
-import { simplifyExpression } from "../assets/api";
+import React, { useState, useEffect } from "react";
+import ReactFlow, { MiniMap, Controls, Background } from "reactflow";
+import 'reactflow/dist/style.css';
+import { simplifyExpression, getApiBaseUrl } from "../assets/api";
 
 function Home() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // React Flow state
+  const [rfNodes, setRfNodes] = useState([]);
+  const [rfEdges, setRfEdges] = useState([]);
+  const [circuitLoading, setCircuitLoading] = useState(false);
 
   const handleSimplify = async () => {
     if (!input.trim()) {
@@ -16,9 +23,11 @@ function Home() {
     setLoading(true);
     setError(null);
     setOutput(null);
+    setRfNodes([]);
+    setRfEdges([]);
 
     try {
-      const data = await simplifyExpression(input);
+      const data = await simplifyExpression(input, false, true);
       setOutput(data);
     } catch (err) {
       setError(err.message || err.detail || "Error simplifying expression");
@@ -33,6 +42,71 @@ function Home() {
     }
   };
 
+  useEffect(() => {
+  if (!output) return;
+
+  let cancelled = false;
+
+  async function loadFromGraphObject(graph) {
+    const nodes = (graph.nodes || []).map(n => ({
+      id: String(n.id),
+      type: n.type || 'default',
+      data: { label: (n.data && n.data.label) ? n.data.label : (n.data || n.label || n.id) },
+      position: n.position || { x: 0, y: 0 },
+      style: { minWidth: 80 }
+    }));
+
+    const edges = (graph.edges || []).map(e => ({
+      id: e.id || `e${e.source}-${e.target}`,
+      source: String(e.source),
+      target: String(e.target),
+      animated: true,
+    }));
+
+    if (!cancelled) {
+      setRfNodes(nodes);
+      setRfEdges(edges);
+    }
+  }
+
+  async function fetchCircuit() {
+    try {
+      setCircuitLoading(true);
+
+      if (output.logic_graph) {
+        await loadFromGraphObject(output.logic_graph);
+        return;
+      }
+
+      if (!output.circuit_url) {
+        return;
+      }
+
+  
+      const base = getApiBaseUrl(); // ← Removed ternary
+      const url = output.circuit_url.startsWith("http")
+        ? output.circuit_url
+        : `${base.replace(/\/$/, "")}${output.circuit_url}`; // ← Simplified
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed to fetch circuit: ${res.statusText}`);
+      const graph = await res.json();
+
+      await loadFromGraphObject(graph);
+    } catch (err) {
+      console.error("Could not load circuit:", err);
+    } finally {
+      if (!cancelled) setCircuitLoading(false);
+    }
+  }
+
+  fetchCircuit();
+
+  return () => {
+    cancelled = true;
+  };
+}, [output]);
+    
   return (
     <>
       <style>{`
@@ -357,6 +431,57 @@ function Home() {
           background: linear-gradient(to right, transparent, rgba(71, 85, 105, 0.5), transparent);
           margin: 1.5rem 0;
         }
+
+        /* React Flow Custom Styles */
+        .react-flow__node {
+          background: rgba(168, 85, 247, 0.2);
+          border: 2px solid #a855f7;
+          border-radius: 8px;
+          padding: 10px;
+          color: white;
+          font-weight: 600;
+        }
+
+        .react-flow__edge-path {
+          stroke: #60a5fa;
+          stroke-width: 2;
+        }
+
+        .react-flow__controls {
+          background: rgba(30, 41, 59, 0.9);
+          border: 1px solid rgba(71, 85, 105, 0.5);
+        }
+
+        .react-flow__controls button {
+          background: rgba(168, 85, 247, 0.2);
+          border-bottom: 1px solid rgba(71, 85, 105, 0.5);
+          color: white;
+        }
+
+        .react-flow__controls button:hover {
+          background: rgba(168, 85, 247, 0.4);
+        }
+
+        .react-flow__minimap {
+          background: #1e293b;
+        }
+
+        .circuit-container {
+          height: 500px;
+          width: 100%;
+          background: #0f172a;
+          border-radius: 8px;
+          border: 1px solid rgba(71, 85, 105, 0.5);
+        }
+
+        .circuit-loading {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          color: #9ca3af;
+          font-size: 1rem;
+        }
       `}</style>
 
       <div className="app-container">
@@ -486,6 +611,41 @@ function Home() {
                     <span className="result-label">Minterms</span>
                     <span className="result-value">{output.minterms.join(", ")}</span>
                   </div>
+                )}
+
+                {(rfNodes.length > 0 || circuitLoading) && (
+                  <>
+                    <div className="section-divider"></div>
+                    <div className="result-row" style={{ flexDirection: 'column', alignItems: 'stretch', padding: '1.5rem' }}>
+                      <span className="result-label" style={{ marginBottom: '1rem' }}>Logic Circuit</span>
+                      <div className="circuit-container">
+                        {circuitLoading ? (
+                          <div className="circuit-loading">
+                            <span>Loading circuit</span>
+                            <span className="loading-dots">
+                              <span className="dot"></span>
+                              <span className="dot"></span>
+                              <span className="dot"></span>
+                            </span>
+                          </div>
+                        ) : (
+                          <ReactFlow
+                            nodes={rfNodes}
+                            edges={rfEdges}
+                            fitView
+                            attributionPosition="bottom-right"
+                          >
+                            <Background color="#475569" gap={16} />
+                            <Controls />
+                            <MiniMap 
+                              nodeColor={() => '#a855f7'} 
+                              maskColor="rgba(0, 0, 0, 0.6)"
+                            />
+                          </ReactFlow>
+                        )}
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
