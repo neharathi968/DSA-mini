@@ -1,0 +1,189 @@
+{
+  "nodes": [
+    {
+      "id": "0",
+      "type": "default",
+      "data": {
+        "label": "OR"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "1",
+      "type": "default",
+      "data": {
+        "label": "AND"
+      },
+      "position": {
+        "x": 300,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "6",
+      "type": "default",
+      "data": {
+        "label": "AND"
+      },
+      "position": {
+        "x": 300,
+        "y": 140
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "2",
+      "type": "default",
+      "data": {
+        "label": "NOT"
+      },
+      "position": {
+        "x": 600,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "4",
+      "type": "default",
+      "data": {
+        "label": "NOT"
+      },
+      "position": {
+        "x": 600,
+        "y": 140
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "7",
+      "type": "input",
+      "data": {
+        "label": "A"
+      },
+      "position": {
+        "x": 600,
+        "y": 280
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "8",
+      "type": "input",
+      "data": {
+        "label": "B"
+      },
+      "position": {
+        "x": 600,
+        "y": 420
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "3",
+      "type": "input",
+      "data": {
+        "label": "A"
+      },
+      "position": {
+        "x": 900,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "5",
+      "type": "input",
+      "data": {
+        "label": "B"
+      },
+      "position": {
+        "x": 900,
+        "y": 140
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-0",
+      "source": "1",
+      "target": "0",
+      "animated": true
+    },
+    {
+      "id": "e6-0",
+      "source": "6",
+      "target": "0",
+      "animated": true
+    },
+    {
+      "id": "e2-1",
+      "source": "2",
+      "target": "1",
+      "animated": true
+    },
+    {
+      "id": "e4-1",
+      "source": "4",
+      "target": "1",
+      "animated": true
+    },
+    {
+      "id": "e7-6",
+      "source": "7",
+      "target": "6",
+      "animated": true
+    },
+    {
+      "id": "e8-6",
+      "source": "8",
+      "target": "6",
+      "animated": true
+    },
+    {
+      "id": "e3-2",
+      "source": "3",
+      "target": "2",
+      "animated": true
+    },
+    {
+      "id": "e5-4",
+      "source": "5",
+      "target": "4",
+      "animated": true
+    }
+  ]
+}

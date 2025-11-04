@@ -1,0 +1,66 @@
+{
+  "nodes": [
+    {
+      "id": "pyid-1208821187984",
+      "type": "customGate",
+      "data": {
+        "label": "UNKNOWN",
+        "type": "0"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "pyid-1208821170896",
+      "type": "customGate",
+      "data": {
+        "label": "1",
+        "type": "1"
+      },
+      "position": {
+        "x": 300,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "pyid-1208821171216",
+      "type": "customGate",
+      "data": {
+        "label": "2",
+        "type": "2"
+      },
+      "position": {
+        "x": 300,
+        "y": 140
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "epyid-1208821170896-pyid-1208821187984",
+      "source": "pyid-1208821170896",
+      "target": "pyid-1208821187984",
+      "animated": true
+    },
+    {
+      "id": "epyid-1208821171216-pyid-1208821187984",
+      "source": "pyid-1208821171216",
+      "target": "pyid-1208821187984",
+      "animated": true
+    }
+  ]
+}

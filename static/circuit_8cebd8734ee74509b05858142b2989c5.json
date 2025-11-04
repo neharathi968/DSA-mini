@@ -1,0 +1,105 @@
+{
+  "nodes": [
+    {
+      "id": "0",
+      "type": "default",
+      "data": {
+        "label": "OR"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "1",
+      "type": "input",
+      "data": {
+        "label": "A"
+      },
+      "position": {
+        "x": 300,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "2",
+      "type": "default",
+      "data": {
+        "label": "AND"
+      },
+      "position": {
+        "x": 300,
+        "y": 140
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "3",
+      "type": "input",
+      "data": {
+        "label": "B"
+      },
+      "position": {
+        "x": 600,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "4",
+      "type": "input",
+      "data": {
+        "label": "C"
+      },
+      "position": {
+        "x": 600,
+        "y": 140
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-0",
+      "source": "1",
+      "target": "0",
+      "animated": true
+    },
+    {
+      "id": "e2-0",
+      "source": "2",
+      "target": "0",
+      "animated": true
+    },
+    {
+      "id": "e3-2",
+      "source": "3",
+      "target": "2",
+      "animated": true
+    },
+    {
+      "id": "e4-2",
+      "source": "4",
+      "target": "2",
+      "animated": true
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "nodes": [
+    {
+      "id": "pyid-1208821062560",
+      "type": "customGate",
+      "data": {
+        "label": "UNKNOWN",
+        "type": "0"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "pyid-1208821063168",
+      "type": "customGate",
+      "data": {
+        "label": "1",
+        "type": "1"
+      },
+      "position": {
+        "x": 300,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "pyid-1208820444208",
+      "type": "customGate",
+      "data": {
+        "label": "2",
+        "type": "2"
+      },
+      "position": {
+        "x": 300,
+        "y": 140
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "pyid-1208820623264",
+      "type": "customGate",
+      "data": {
+        "label": "3",
+        "type": "3"
+      },
+      "position": {
+        "x": 600,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "pyid-1208820623536",
+      "type": "customGate",
+      "data": {
+        "label": "4",
+        "type": "4"
+      },
+      "position": {
+        "x": 600,
+        "y": 140
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "epyid-1208821063168-pyid-1208821062560",
+      "source": "pyid-1208821063168",
+      "target": "pyid-1208821062560",
+      "animated": true
+    },
+    {
+      "id": "epyid-1208820444208-pyid-1208821062560",
+      "source": "pyid-1208820444208",
+      "target": "pyid-1208821062560",
+      "animated": true
+    },
+    {
+      "id": "epyid-1208820623264-pyid-1208820444208",
+      "source": "pyid-1208820623264",
+      "target": "pyid-1208820444208",
+      "animated": true
+    },
+    {
+      "id": "epyid-1208820623536-pyid-1208820444208",
+      "source": "pyid-1208820623536",
+      "target": "pyid-1208820444208",
+      "animated": true
+    }
+  ]
+}
