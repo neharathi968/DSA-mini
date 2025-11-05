@@ -3,6 +3,23 @@ import ReactFlow, { MiniMap, Controls, Background } from "reactflow";
 import 'reactflow/dist/style.css';
 import { simplifyExpression, getApiBaseUrl } from "../assets/api";
 
+// Import custom node components
+import AndGateNode from '../components/nodes/AndGateNode';
+import OrGateNode from '../components/nodes/OrGateNode';
+import NotGateNode from '../components/nodes/NotGateNode';
+//import XorGateNode from '../components/nodes/XorGateNode';
+import InputNode from '../components/nodes/InputNode';
+
+// Define custom node types for ReactFlow
+const nodeTypes = {
+  AND: AndGateNode,
+  OR: OrGateNode,
+  NOT: NotGateNode,// Reuse XOR for now, or create separate
+  IMPLIES: OrGateNode, // Placeholder  // Placeholder
+  input: InputNode,
+  default: AndGateNode, // Fallback
+};
+
 function Home() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState(null);
@@ -632,6 +649,7 @@ function Home() {
                           <ReactFlow
                             nodes={rfNodes}
                             edges={rfEdges}
+                            nodeTypes={nodeTypes}
                             fitView
                             attributionPosition="bottom-right"
                           >
