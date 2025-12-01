@@ -19,7 +19,23 @@ def graph_to_reactflow_json(root: GateNode) -> Dict[str, Any]:
     visited = set()
     queue = deque([(root, 0)])
     level_y = {}
+    max_level = 0  # Track maximum depth
 
+    # First pass: determine max depth
+    temp_queue = deque([(root, 0)])
+    temp_visited = set()
+    while temp_queue:
+        gate, level = temp_queue.popleft()
+        if gate.id in temp_visited:
+            continue
+        temp_visited.add(gate.id)
+        max_level = max(max_level, level)
+        if gate.left:
+            temp_queue.append((gate.left, level + 1))
+        if gate.right:
+            temp_queue.append((gate.right, level + 1))
+
+    # Second pass: build nodes with reversed x positions
     while queue:
         gate, level = queue.popleft()
         if gate.id in visited:
@@ -31,12 +47,15 @@ def graph_to_reactflow_json(root: GateNode) -> Dict[str, Any]:
             level_y[level] = []
         y = len(level_y[level]) * 140
         level_y[level].append(y)
-        x = level * 300
+        
+        # REVERSED: inputs (high level) get low x, output (level 0) gets high x
+        x = (max_level - level) * 300
 
         # Node type
-        node_type = "input" if gate.type == "INPUT" else "default"
-        if gate.type in {"AND", "OR", "NOT", "XOR"}:
-            node_type = "default"
+        if gate.type == "INPUT":
+            node_type = "input"
+        else:
+            node_type = gate.type  # Use actual gate type
 
         nodes.append({
             "id": str(gate.id),
@@ -65,6 +84,7 @@ def graph_to_reactflow_json(root: GateNode) -> Dict[str, Any]:
             queue.append((gate.right, level + 1))
 
     return {"nodes": nodes, "edges": edges}
+
 
 def save_circuit_json(root: GateNode, filename: str = None) -> str:
     import uuid

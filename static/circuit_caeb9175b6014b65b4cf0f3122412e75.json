@@ -1,0 +1,63 @@
+{
+  "nodes": [
+    {
+      "id": "0",
+      "type": "AND",
+      "data": {
+        "label": "AND"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "1",
+      "type": "input",
+      "data": {
+        "label": "b"
+      },
+      "position": {
+        "x": 300,
+        "y": 0
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "2",
+      "type": "input",
+      "data": {
+        "label": "c"
+      },
+      "position": {
+        "x": 300,
+        "y": 140
+      },
+      "style": {
+        "fontWeight": "bold",
+        "fontSize": 14
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-0",
+      "source": "1",
+      "target": "0",
+      "animated": true
+    },
+    {
+      "id": "e2-0",
+      "source": "2",
+      "target": "0",
+      "animated": true
+    }
+  ]
+}
