@@ -20,7 +20,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://logic-gate-simulator.onrender.com",
-        "https://dsa-mini-eight.vercel.app/", # Add your specific Vercel URL here
+        "https://dsa-mini-two.vercel.app", # Add your specific Vercel URL here
         "http://localhost:5173", # Good to keep for local frontend dev
     ],
     allow_credentials=True,
