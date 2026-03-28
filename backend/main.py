@@ -16,7 +16,17 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("kmap_main")
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://logic-gate-simulator.onrender.com",
+        "https://dsa-mini-two.vercel.app", # Add your specific Vercel URL here
+        "http://localhost:5173", # Good to keep for local frontend dev
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 os.makedirs("static", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
